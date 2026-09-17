@@ -301,58 +301,78 @@ SƠ ĐỒ USECASE
 
 
 B12 – Đặc tả Use Case
-| Thành phần           | Nội dung                                                                                                                                                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Use Case ID**      | UC01                                                                                                                                                                                                                         |
-| **Tên**              | Đặt xe                                                                                                                                                                                                                       |
-| **Actor**            | Customer                                                                                                                                                                                                                     |
-| **Mục tiêu**         | Khách hàng tạo yêu cầu đặt xe                                                                                                                                                                                                |
-| **Pre-condition**    | Customer đã đăng nhập                                                                                                                                                                                                        |
-| **Input**            | Điểm đón, điểm đến, loại xe                                                                                                                                                                                                  |
-| **Main Flow**        | 1. Customer nhập điểm đón và điểm đến → 2. Chọn loại xe → 3. Hệ thống kiểm tra thông tin → 4. Hệ thống tạo yêu cầu → 5. Hệ thống tìm tài xế → 6. Gửi yêu cầu cho tài xế → 7. Tài xế Accept → 8. Xác nhận chuyến cho Customer |
-| **Alternative Flow** | Tài xế Reject → tìm tài xế khác                                                                                                                                                                                              |
-| **Exception**        | Tài xế không Accept trong thời hạn → Timeout → tìm tài xế tiếp theo                                                                                                                                                          |
-| **Exception**        | Không tìm được tài xế → thông báo Customer                                                                                                                                                                                   |
-| **Post-condition**   | Chuyến được tạo và gán cho tài xế hoặc chuyển sang trạng thái không tìm được tài xế                                                                                                                                          |
-| Thành phần           | Nội dung                                                                                                                                                    |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Use Case ID**      | UC02                                                                                                                                                        |
-| **Tên**              | Tìm và phân công tài xế                                                                                                                                     |
-| **Actor**            | System, Driver                                                                                                                                              |
-| **Mục tiêu**         | Tìm tài xế phù hợp cho chuyến                                                                                                                               |
-| **Pre-condition**    | Đã có yêu cầu đặt xe                                                                                                                                        |
-| **Main Flow**        | 1. Xác định vị trí khách → 2. Tìm tài xế Available → 3. Lọc theo loại xe → 4. Tính khoảng cách → 5. Ưu tiên tài xế phù hợp → 6. Gửi yêu cầu → 7. Chờ Accept |
-| **Alternative Flow** | Driver Reject → chọn Driver tiếp theo                                                                                                                       |
-| **Exception**        | Timeout → chọn Driver tiếp theo                                                                                                                             |
-| **Exception**        | Không có Driver → thông báo Customer                                                                                                                        |
-| **Post-condition**   | Một Driver được gán vào Ride                                                                                                                                |
-| Thành phần         | Nội dung                                                                                                                                                                               |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Use Case ID**    | UC03                                                                                                                                                                                   |
-| **Tên**            | Thanh toán                                                                                                                                                                             |
-| **Actor**          | Customer, Payment Gateway                                                                                                                                                              |
-| **Pre-condition**  | Chuyến đã hoàn thành                                                                                                                                                                   |
-| **Main Flow**      | 1. Hệ thống tính cước → 2. Customer chọn phương thức → 3. Gửi yêu cầu thanh toán → 4. Payment Gateway xử lý → 5. Nhận kết quả → 6. Cập nhật trạng thái Payment → 7. Thông báo Customer |
-| **Exception**      | Thanh toán thất bại → thông báo Customer → cho phép thanh toán lại                                                                                                                     |
-| **Post-condition** | Payment = Success hoặc Failed/Pending                                                                                                                                                  |
-| Thành phần         | Nội dung                                                               |
-| ------------------ | ---------------------------------------------------------------------- |
-| **Use Case ID**    | UC04                                                                   |
-| **Tên**            | Cập nhật trạng thái chuyến                                             |
-| **Actor**          | Driver                                                                 |
-| **Pre-condition**  | Driver đã nhận chuyến                                                  |
-| **Main Flow**      | Đã nhận → Đã đến điểm đón → Đã đón khách → Đang di chuyển → Hoàn thành |
-| **Exception**      | Cập nhật sai thứ tự → hệ thống từ chối                                 |
-| **Post-condition** | Trạng thái Ride được cập nhật                                          |
-| Thành phần         | Nội dung                                                                    |
-| ------------------ | --------------------------------------------------------------------------- |
-| **Use Case ID**    | UC05                                                                        |
-| **Tên**            | Đánh giá tài xế                                                             |
-| **Actor**          | Customer                                                                    |
-| **Pre-condition**  | Chuyến đã hoàn thành                                                        |
-| **Main Flow**      | Customer chọn số sao → nhập nhận xét → gửi đánh giá → hệ thống lưu đánh giá |
-| **Exception**      | Chuyến chưa hoàn thành → không cho đánh giá                                 |
-| **Post-condition** | Rating được lưu và cập nhật điểm tài xế                                     |
+
+## 1. Identity & Access – Quản lý tài khoản và xác thực
+
+| Use Case ID | Tên Use Case      | Actor                         | Mô tả                                                      |
+| ----------- | ----------------- | ----------------------------- | ---------------------------------------------------------- |
+| UC-01       | Đăng ký tài khoản | Khách hàng, Tài xế            | Người dùng đăng ký tài khoản mới trên hệ thống             |
+| UC-02       | Đăng nhập         | Khách hàng, Tài xế, Nhân viên | Người dùng đăng nhập vào hệ thống                          |
+| UC-03       | Đăng xuất         | Khách hàng, Tài xế, Nhân viên | Người dùng đăng xuất khỏi hệ thống                         |
+| UC-04       | Quên mật khẩu     | Khách hàng, Tài xế            | Người dùng yêu cầu khôi phục mật khẩu khi quên             |
+| UC-05       | Xác thực OTP      | Khách hàng, Tài xế            | Người dùng xác thực bằng mã OTP                            |
+| UC-06       | Làm mới Token     | Khách hàng, Tài xế, Nhân viên | Hệ thống cấp Access Token mới khi Refresh Token còn hợp lệ |
+
+## 2. User Profile – Quản lý hồ sơ người dùng
+
+| Use Case ID | Tên Use Case           | Actor              | Mô tả                                       |
+| ----------- | ---------------------- | ------------------ | ------------------------------------------- |
+| UC-07       | Xem hồ sơ cá nhân      | Khách hàng, Tài xế | Người dùng xem thông tin hồ sơ cá nhân      |
+| UC-08       | Cập nhật hồ sơ cá nhân | Khách hàng, Tài xế | Người dùng cập nhật thông tin hồ sơ cá nhân |
+
+## 3. Booking – Đặt xe
+
+| Use Case ID | Tên Use Case         | Actor              | Mô tả                              |
+| ----------- | -------------------- | ------------------ | ---------------------------------- |
+| UC-09       | Tạo yêu cầu đặt xe   | Khách hàng         | Khách hàng tạo yêu cầu đặt xe      |
+| UC-10       | Xem thông tin đặt xe | Khách hàng, Tài xế | Người dùng xem thông tin booking   |
+| UC-11       | Hủy yêu cầu đặt xe   | Khách hàng         | Khách hàng hủy yêu cầu đặt xe      |
+| UC-12       | Chọn loại xe         | Khách hàng         | Khách hàng lựa chọn loại xe        |
+| UC-13       | Chọn điểm đón        | Khách hàng         | Khách hàng nhập hoặc chọn điểm đón |
+| UC-14       | Chọn điểm trả        | Khách hàng         | Khách hàng nhập hoặc chọn điểm trả |
+
+## 4. Pricing – Quản lý giá
+
+| Use Case ID | Tên Use Case           | Actor      | Mô tả                                           |
+| ----------- | ---------------------- | ---------- | ----------------------------------------------- |
+| UC-15       | Ước tính giá chuyến đi | Khách hàng | Hệ thống tính và hiển thị giá chuyến đi dự kiến |
+| UC-16       | Áp dụng mã giảm giá    | Khách hàng | Khách hàng áp dụng mã giảm giá cho booking      |
+| UC-17       | Xác nhận giá chuyến đi | Khách hàng | Khách hàng xác nhận mức giá của chuyến đi       |
+
+## 5. Driver Management – Quản lý tài xế
+
+| Use Case ID | Tên Use Case               | Actor                 | Mô tả                                    |
+| ----------- | -------------------------- | --------------------- | ---------------------------------------- |
+| UC-18       | Tài xế đăng nhập           | Tài xế                | Tài xế đăng nhập vào hệ thống            |
+| UC-19       | Cập nhật trạng thái tài xế | Tài xế                | Tài xế cập nhật trạng thái hoạt động     |
+| UC-20       | Quản lý phương tiện        | Tài xế, Nhân viên     | Quản lý thông tin phương tiện của tài xế |
+| UC-21       | Xem thông tin tài xế       | Khách hàng, Nhân viên | Xem thông tin của tài xế                 |
+
+## 6. Driver Matching / Dispatch – Tìm kiếm và phân công tài xế
+
+| Use Case ID | Tên Use Case                    | Actor    | Mô tả                                                             |
+| ----------- | ------------------------------- | -------- | ----------------------------------------------------------------- |
+| UC-22       | Tìm tài xế khả dụng             | Hệ thống | Hệ thống tìm các tài xế phù hợp với booking                       |
+| UC-23       | Phân công tài xế                | Hệ thống | Hệ thống phân công tài xế cho booking                             |
+| UC-24       | Nhận yêu cầu chuyến đi          | Tài xế   | Tài xế nhận yêu cầu chuyến đi                                     |
+| UC-25       | Từ chối yêu cầu chuyến đi       | Tài xế   | Tài xế từ chối yêu cầu chuyến đi                                  |
+| UC-26       | Xử lý quá thời gian nhận chuyến | Hệ thống | Hệ thống xử lý khi tài xế không phản hồi trong thời gian quy định |
+
+## 7. Trip Management – Quản lý chuyến đi
+
+| Use Case ID | Tên Use Case         | Actor              | Mô tả                                           |
+| ----------- | -------------------- | ------------------ | ----------------------------------------------- |
+| UC-27       | Bắt đầu chuyến đi    | Tài xế             | Tài xế bắt đầu chuyến đi                        |
+| UC-28       | Theo dõi chuyến đi   | Khách hàng, Tài xế | Khách hàng và tài xế theo dõi trạng thái chuyến |
+| UC-29       | Hoàn thành chuyến đi | Tài xế             | Tài xế hoàn thành chuyến đi                     |
+| UC-30       | Hủy chuyến đi        | Khách hàng, Tài xế | Xử lý việc hủy chuyến theo điều kiện nghiệp vụ  |
+
+## 8. Payment – Thanh toán
+
+| Use Case ID | Tên Use Case                | Actor      | Mô tả                                      |
+| ----------- | --------------------------- | ---------- | ------------------------------------------ |
+| UC-31       | Chọn phương thức thanh toán | Khách hàng | Khách hàng lựa chọn phương thức thanh toán |
+| UC-32       | Thực hiện thanh toán        | Hệ thống,  |                                            |
 
 B13 – Acceptance Criteria
 | Mã AC    | Business Requirement                    | Acceptance Criteria – Tiêu chí chấp nhận                                                                                                                |
